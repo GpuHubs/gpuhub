@@ -1,0 +1,19 @@
+{
+  "name": "@gpuhub/provider",
+  "private": true,
+  "type": "module",
+  "description": "Rents out this PC's GPU and CPU through isolated containers.",
+  "scripts": {
+    "start": "node src/main.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "viem": "2.57.16",
+    "ws": "8.22.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/ws": "^8.5.0",
+    "typescript": "^5.8.0"
+  }
+}

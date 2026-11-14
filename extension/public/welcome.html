@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Welcome to GPUhub</title>
+    <link rel="icon" type="image/png" href="icons/icon32.png" />
+    <style>
+      @font-face { font-family: "Chakra Petch"; src: url("fonts/chakra-petch-600.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+      @font-face { font-family: "Barlow"; src: url("fonts/barlow-400.woff2") format("woff2"); font-weight: 400 500; font-display: swap; }
+      @font-face { font-family: "Barlow"; src: url("fonts/barlow-600.woff2") format("woff2"); font-weight: 600 700; font-display: swap; }
+      :root { --bg: #f5f7f9; --card: #ffffff; --ink: #0f1722; --muted: #5a6877; --faint: #8794a3; --line: #dbe2ea; --accent: #2b3f6b; --good: #1f9d6b; --bad: #b3261e; }
+      @media (prefers-color-scheme: dark) { :root { --bg: #0a0e15; --card: #121826; --ink: #e8edf5; --muted: #9aa7ba; --faint: #6b788c; --line: #232c3d; --accent: #8da2d4; --good: #4fd49a; --bad: #ff8f86; } }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.55 "Barlow", system-ui, "Segoe UI", sans-serif; }
+      main { max-width: 760px; margin: 0 auto; padding: 56px 24px 80px; }
+      .brand { display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 16px; letter-spacing: 0.1em; }
+      .brand svg { width: 32px; height: 32px; fill: var(--accent); }
+      h1 { margin: 56px 0 14px; font: 600 clamp(34px, 6vw, 54px)/1.05 "Chakra Petch", system-ui, sans-serif; letter-spacing: -0.02em; }
+      h1 em { color: var(--accent); }
+      .lede { margin: 0; max-width: 52ch; color: var(--muted); font-size: 20px; line-height: 1.45; }
+      h2 { margin: 56px 0 18px; font: 600 30px/1.1 "Chakra Petch", system-ui, sans-serif; letter-spacing: -0.015em; }
+      .steps { display: grid; gap: 12px; padding: 0; margin: 0; list-style: none; counter-reset: s; }
+      .steps li { counter-increment: s; position: relative; padding: 22px 24px 22px 76px; border-radius: 20px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); }
+      .steps li::before { content: counter(s); position: absolute; left: 24px; top: 20px; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); font: 600 15px "Barlow", sans-serif; }
+      .steps b { display: block; font-size: 18px; margin-bottom: 2px; }
+      .steps span { color: var(--muted); font-size: 16px; }
+      .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .box { padding: 22px 24px; border-radius: 20px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); }
+      .box h3 { margin: 0 0 8px; font: 600 22px "Chakra Petch", system-ui, sans-serif; }
+      .box ul { margin: 0; padding: 0; list-style: none; }
+      .box li { position: relative; padding: 9px 0 9px 30px; border-top: 1px solid var(--line); font-size: 16px; }
+      .box li::before { position: absolute; left: 0; top: 9px; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; }
+      .yes li::before { content: "✓"; background: color-mix(in srgb, var(--good) 18%, transparent); color: var(--good); }
+      .no li::before { content: "✕"; background: color-mix(in srgb, var(--bad) 16%, transparent); color: var(--bad); }
+      p { margin: 0 0 12px; }
+      .muted { color: var(--muted); }
+      footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; }
+      @media (max-width: 620px) { .two { grid-template-columns: 1fr; } .steps li { padding-left: 68px; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="brand">
+        <svg viewBox="83 80 346 346" aria-hidden="true"><path d="M148 124C168.971 106.973 193.698 95.1894 220.131 89.6245C246.565 84.0596 273.944 84.8739 300 92L282 158C266.411 153.731 250.031 153.227 234.21 156.53C218.388 159.834 203.578 166.85 191 177L148 124Z"/><path d="M136 136L184 184C166.009 201.878 155.324 225.817 154.03 251.147C152.735 276.478 160.925 301.382 177 321L124 364C97.3455 331.285 83.8112 289.826 86.0291 247.686C88.247 205.545 106.059 165.736 136 136Z"/><path d="M136 376L184 328C201.878 345.991 225.817 356.676 251.147 357.97C276.478 359.265 301.382 351.075 321 335L364 388C331.285 414.654 289.826 428.189 247.686 425.971C205.545 423.753 165.736 405.941 136 376Z"/><path d="M335 321C342.428 311.735 348.181 301.244 352 290H254V222H426V256C425.89 301.045 407.907 344.204 376 376L335 321Z"/><path d="M330 80C366.865 91.763 398.614 115.751 420 148L364 187C351.623 167.381 332.929 152.566 311 145L330 80Z"/></svg>
+        GPUHUB
+      </div>
+
+      <h1>Your browser,<br />put to <em>work</em>.</h1>
+      <p class="lede">GPUhub lets AI agents rent your idle GPU and CPU, by the second. You set the price and get paid. Nothing runs until you turn it on.</p>
+
+      <h2>Get started in three steps</h2>
+      <ol class="steps">
+        <li><b>Add your wallet</b><span>Click the GPUhub icon in your toolbar (pin it from the puzzle-piece menu if you can't see it) and paste the address where you want to be paid. A public address is enough. We never ask for a private key.</span></li>
+        <li><b>Set your price</b><span>Choose a price in dollars per hour. You can change it whenever you like.</span></li>
+        <li><b>Turn it on</b><span>Use the switch at the top of the window. By default it only works while you're away from the PC and plugged in.</span></li>
+      </ol>
+
+      <h2>What a renter can and can't do</h2>
+      <div class="two">
+        <div class="box yes"><h3>Can</h3><ul><li>Run WASM and WebGPU programs in a sandbox</li><li>Use your GPU and CPU while rented</li></ul></div>
+        <div class="box no"><h3>Cannot</h3><ul><li>Reach your files</li><li>Reach your network</li><li>See your other tabs</li></ul></div>
+      </div>
+
+      <h2>How you earn</h2>
+      <p>Renters pay by the second, in the GPUhub token. What you've earned shows in the window, and you get a quiet notice when it grows. You can turn those notices off in the window.</p>
+      <p class="muted">When you're ready to collect, open the GPUhub site, go to <b>For PC owners</b>, connect the same wallet and claim.</p>
+
+      <footer>You can stop sharing at any moment from the icon. You can close this page now.</footer>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>GPUhub</title>
+    <style>
+      /* the site's own palette and fonts, light and dark, with the fonts packed into the extension */
+      @font-face { font-family: "Chakra Petch"; src: url("fonts/chakra-petch-600.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+      @font-face { font-family: "Barlow"; src: url("fonts/barlow-400.woff2") format("woff2"); font-weight: 400 500; font-display: swap; }
+      @font-face { font-family: "Barlow"; src: url("fonts/barlow-600.woff2") format("woff2"); font-weight: 600 700; font-display: swap; }
+      :root {
+        --bg: #f5f7f9;
+        --card: #ffffff;
+        --ink: #0f1722;
+        --muted: #5a6877;
+        --faint: #8794a3;
+        --line: #dbe2ea;
+        --accent: #2b3f6b;
+        --accent-ink: #ffffff;
+        --good: #1f9d6b;
+        --bad: #b3261e;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0a0e15;
+          --card: #121826;
+          --ink: #e8edf5;
+          --muted: #9aa7ba;
+          --faint: #6b788c;
+          --line: #232c3d;
+          --accent: #8da2d4;
+          --accent-ink: #0a0e15;
+          --good: #4fd49a;
+          --bad: #ff8f86;
+        }
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; width: 340px; background: var(--bg); color: var(--ink); font: 400 13px/1.45 "Barlow", system-ui, "Segoe UI", sans-serif; font-variant-numeric: tabular-nums; }
+      header { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px 14px; }
+      .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; letter-spacing: 0.1em; }
+      .brand svg { width: 26px; height: 26px; fill: var(--accent); flex: none; }
+      .brand small { margin-left: 2px; padding: 2px 8px; border-radius: 999px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); color: var(--muted); font-size: 11px; font-weight: 500; letter-spacing: 0.02em; }
+      .switch { position: relative; width: 46px; height: 26px; flex: none; }
+      .switch input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; margin: 0; cursor: pointer; z-index: 1; }
+      .switch i { position: absolute; inset: 0; border-radius: 13px; background: var(--line); transition: background 0.18s; }
+      .switch i::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--card); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); transition: transform 0.18s; }
+      .switch input:checked + i { background: var(--accent); }
+      .switch input:checked + i::after { transform: translateX(20px); background: var(--accent-ink); }
+      .switch input:focus-visible + i { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+      #status { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: baseline; margin: 0 18px; padding: 14px 16px; border-radius: 16px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); }
+      #status::before { content: ""; grid-row: 1; width: 9px; height: 9px; border-radius: 50%; background: var(--faint); align-self: center; }
+      #status.good::before { background: var(--good); box-shadow: 0 0 0 4px color-mix(in srgb, var(--good) 22%, transparent); }
+      #status.bad::before { background: var(--bad); }
+      #status b { font-family: "Chakra Petch", system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -0.01em; }
+      #status.bad b { color: var(--bad); }
+      #detail { grid-column: 2; color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+
+      .earn { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 12px 18px 4px; }
+      .earn div { padding: 10px 10px; border-radius: 14px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); }
+      .earn span { display: block; color: var(--muted); font-size: 10.5px; white-space: nowrap; }
+      .earn strong { display: block; margin-top: 2px; font-family: "Chakra Petch", system-ui, sans-serif; font-weight: 600; font-size: 20px; letter-spacing: -0.01em; }
+
+      form { padding: 12px 18px 18px; display: grid; gap: 12px; }
+      label { display: grid; gap: 5px; color: var(--muted); font-size: 12px; }
+      input[type="text"], input[type="number"] { width: 100%; padding: 9px 11px; border-radius: 12px; border: 0; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); color: var(--ink); font: 12.5px ui-monospace, "Cascadia Mono", Consolas, monospace; }
+      input[type="text"]::placeholder { color: var(--faint); }
+      input[type="text"]:hover, input[type="number"]:hover { box-shadow: inset 0 0 0 1px var(--faint); }
+      input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+      .check { display: flex; align-items: center; gap: 9px; color: var(--ink); font-size: 13px; cursor: pointer; }
+      .check input { appearance: none; width: 18px; height: 18px; margin: 0; border-radius: 6px; background: var(--card); box-shadow: inset 0 0 0 1.5px var(--faint); display: grid; place-items: center; flex: none; cursor: pointer; }
+      .check input:checked { background: var(--accent); box-shadow: none; }
+      .check input:checked::after { content: ""; width: 9px; height: 5px; margin-top: -2px; border-left: 2px solid var(--accent-ink); border-bottom: 2px solid var(--accent-ink); transform: rotate(-45deg); }
+      .hint { margin: 0 18px 12px; padding: 10px 14px; border-radius: 14px; background: color-mix(in srgb, var(--accent) 14%, transparent); color: var(--ink); font-size: 12.5px; line-height: 1.4; }
+      input.need:not(:focus) { box-shadow: inset 0 0 0 1.5px var(--accent); }
+      .note a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+      .note { margin: 2px 0 0; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="brand">
+        <svg viewBox="83 80 346 346" aria-hidden="true"><path d="M148 124C168.971 106.973 193.698 95.1894 220.131 89.6245C246.565 84.0596 273.944 84.8739 300 92L282 158C266.411 153.731 250.031 153.227 234.21 156.53C218.388 159.834 203.578 166.85 191 177L148 124Z"/><path d="M136 136L184 184C166.009 201.878 155.324 225.817 154.03 251.147C152.735 276.478 160.925 301.382 177 321L124 364C97.3455 331.285 83.8112 289.826 86.0291 247.686C88.247 205.545 106.059 165.736 136 136Z"/><path d="M136 376L184 328C201.878 345.991 225.817 356.676 251.147 357.97C276.478 359.265 301.382 351.075 321 335L364 388C331.285 414.654 289.826 428.189 247.686 425.971C205.545 423.753 165.736 405.941 136 376Z"/><path d="M335 321C342.428 311.735 348.181 301.244 352 290H254V222H426V256C425.89 301.045 407.907 344.204 376 376L335 321Z"/><path d="M330 80C366.865 91.763 398.614 115.751 420 148L364 187C351.623 167.381 332.929 152.566 311 145L330 80Z"/></svg>
+        GPUHUB <small>Provider</small>
+      </div>
+      <label class="switch" aria-label="Rent out this browser">
+        <input id="enabled" type="checkbox" />
+        <i></i>
+      </label>
+    </header>
+    <p id="hint" class="hint" hidden></p>
+    <div id="status" role="status"><b id="state">Off</b><span id="detail">Turn it on to rent out this browser.</span></div>
+    <div class="earn">
+      <div><span>Rentals</span><strong id="sessions">0</strong></div>
+      <div><span>GHUB to claim</span><strong id="spare">0</strong></div>
+      <div><span>Not settled</span><strong id="pending">$0</strong></div>
+    </div>
+    <form id="form">
+      <label>Payout address (no private key needed)
+        <input id="payout" type="text" spellcheck="false" placeholder="0x…" autocomplete="off" />
+      </label>
+      <label>Your price, USD per hour
+        <input id="hourlyUsd" type="number" min="0.001" step="0.001" />
+      </label>
+      <label>Marketplace address
+        <input id="coordinator" type="text" spellcheck="false" autocomplete="off" />
+      </label>
+      <label class="check"><input id="onlyIdle" type="checkbox" /> Only when I'm away from the PC</label>
+      <label class="check"><input id="onlyPlugged" type="checkbox" /> Only when plugged in</label>
+      <label class="check"><input id="notify" type="checkbox" /> Tell me when I earn</label>
+      <p class="note">Renters run sandboxed WASM and WebGPU code. It cannot reach your files, your network or other tabs. It does use your GPU and CPU while rented. <a id="help" href="#">How it works</a></p>
+    </form>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
