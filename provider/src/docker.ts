@@ -2,7 +2,10 @@ import { spawn } from "node:child_process";
 
 /** Images a renter may start. The coordinator checks too, but this PC has the last word. */
 export const TORCH_IMAGE = "pytorch/pytorch:2.14.1-cuda12.6-cudnn9-runtime";
-export const ALLOWED_IMAGES = ["python:3.12-slim", "ubuntu:24.04", TORCH_IMAGE];
+/** Images with the usual libraries inside (see images/). A machine offers one only after it has pulled it. */
+export const ML_BASE_IMAGE = "ghcr.io/gpuhubs/ml-base:1";
+export const ML_GPU_IMAGE = "ghcr.io/gpuhubs/ml-gpu:1";
+export const ALLOWED_IMAGES = ["python:3.12-slim", "ubuntu:24.04", TORCH_IMAGE, ML_BASE_IMAGE, ML_GPU_IMAGE];
 export const DEFAULT_IMAGE = "python:3.12-slim";
 export const MAX_OUTPUT_BYTES = 1024 * 1024;
 /** Largest piece of a file in one message, in raw bytes. Bigger files go in several pieces. */
@@ -252,7 +255,9 @@ export class DockerRunner implements Runner {
 
   /** Downloads what this machine should offer. The PyTorch image is several GB. */
   async prepare(log: (m: string) => void) {
-    const wanted = [DEFAULT_IMAGE, ...(this.limits.gpu ? [TORCH_IMAGE] : [])];
+    // The library images are optional: they add a few GB, so an owner opts in (GPUHUB_PULL_ML=1).
+    const ml = process.env.GPUHUB_PULL_ML === "1" ? [ML_BASE_IMAGE, ...(this.limits.gpu ? [ML_GPU_IMAGE] : [])] : [];
+    const wanted = [DEFAULT_IMAGE, ...(this.limits.gpu ? [TORCH_IMAGE] : []), ...ml];
     const ready = await this.readyImages();
     for (const image of wanted.filter((w) => !ready.includes(w))) {
       log(`Downloading ${image}, this happens once and can take a while…`);
